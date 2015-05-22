@@ -17,27 +17,31 @@ my $uid = 1000;
 my $gid = 1000;
 
 $uid = $gid = $ENV{'User_Id'} if $ENV{'User_Id'} =~ /\d+/;
+my $PW  = $ENV{'PW'};
 
 sub add_user {
-  my ($name,$id)=@_;
+  my ($name,$id,$pw)=@_;
 
   system("/usr/sbin/useradd",
     "-s", "/bin/false",
     "-U", "--uid", "$id",
+    "-p", "$pw",
     "$name");
 }
 unless (getpwuid("$uid")){
-  add_user("docker",  "$uid");
+  add_user("docker", "$uid", "$PW");
+  system("chown", "docker.docker", "-R", "/home/docker");
 }
 
-if ( -d "/home/docker/.ssh"){
-  system("/usr/bin/chown", "docker.docker", "-R", "/home/docker/.ssh");
+unless ( -d "/var/run/sshd"){
+  system("mkdir", "/var/run/sshd");
+  system("chmod", "0755", "/var/run/sshd");
 }
 
 # 切换当前运行用户,先切GID.
 #$GID = $EGID = $gid;
 #$UID = $EUID = $uid;
-$( = $) = $gid; die "switch gid error\n" if $gid != $( ;
-$< = $> = $uid; die "switch uid error\n" if $uid != $< ;
+#$( = $) = $gid; die "switch gid error\n" if $gid != $( ;
+#$< = $> = $uid; die "switch uid error\n" if $uid != $< ;
 
 exec(@ARGV);

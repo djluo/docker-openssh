@@ -4,7 +4,7 @@ MAINTAINER djluo <dj.luo@baoyugame.com>
 RUN export http_proxy="http://172.17.42.1:8080/" \
     && export DEBIAN_FRONTEND=noninteractive     \
     && apt-get update \
-    && apt-get install -y openssh-client supervisor \
+    && apt-get install -y openssh-client openssh-server supervisor \
     && apt-get clean    \
     && unset http_proxy \
     && unset DEBIAN_FRONTEND   \
