@@ -30,8 +30,12 @@ unless (getpwuid("$uid")){
   add_user("docker",  "$uid");
 }
 
-if ( -d "/home/docker/.ssh"){
-  system("/usr/bin/chown", "docker.docker", "-R", "/home/docker/.ssh");
+if ( -d "/logs"){
+  system("/usr/bin/chown", "docker.docker", "-R", "/logs");
+}
+if ( -f "/conf/id_rsa" ){
+  system("/usr/bin/chmod", "600", "/conf/id_rsa");
+  system("/usr/bin/chown", "docker.docker", "/conf/id_rsa");
 }
 
 # 切换当前运行用户,先切GID.
