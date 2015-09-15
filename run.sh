@@ -4,10 +4,6 @@
 # Author : djluo
 # version: 4.0(20150107)
 
-# chkconfig: 3 90 19
-# description:
-# processname: zentao container
-
 [ -r "/etc/baoyu/functions"  ] && source "/etc/baoyu/functions" && _current_dir
 [ -f "${current_dir}/docker" ] && source "${current_dir}/docker"
 
@@ -16,7 +12,7 @@
 _container_name ${current_dir}
 
 images="${registry}/baoyu/openssh"
-#default_port="172.17.42.1:9292:9292"
+#default_port="172.17.42.1:3306:3306"
 
 action="$1"    # start or stop ...
 _get_uid "$2"  # uid=xxxx ,default is "1000"
@@ -29,18 +25,19 @@ app_port=${app_port:=${default_port}}
 _port
 
 _run() {
-  local mode="-d" # --restart=always"
+  local mode="-d --restart=always"
   local name="$container_name"
-  local cmd="/usr/bin/ssh -v -oStrictHostKeyChecking=no -p932 -N -D0.0.0.0:1080 djluo@u35.m9o.net"
+  local cmd="/usr/bin/supervisord -n -c /supervisord.conf"
 
   [ "x$1" == "xdebug" ] && _run_debug
 
   sudo docker run $mode $port \
     -e "TZ=Asia/Shanghai"     \
-    -e "HOME=/home/docker"    \
     -e "User_Id=${User_Id}"   \
-    -v "${current_dir}/keys:/home/docker/.ssh" \
-    --name ${name} ${images}  \
+    -v ${current_dir}/conf/:/conf/ \
+    -v ${current_dir}/logs/:/logs/ \
+    -v ${current_dir}/supervisord.conf:/supervisord.conf \
+    --name ${name} ${images} \
     $cmd
 }
 ###############
