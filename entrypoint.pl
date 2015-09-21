@@ -31,11 +31,15 @@ unless (getpwuid("$uid")){
 }
 
 if ( -d "/logs"){
-  system("/usr/bin/chown", "docker.docker", "-R", "/logs");
+  system("chown", "docker.docker", "-R", "/logs");
 }
 if ( -f "/conf/id_rsa" ){
-  system("/usr/bin/chmod", "600", "/conf/id_rsa");
-  system("/usr/bin/chown", "docker.docker", "/conf/id_rsa");
+  system("chmod", "600", "/conf/id_rsa");
+  system("chown", "docker.docker", "/conf/id_rsa");
+}
+unless ( -f "/conf/example" ){
+  system("cp", "/example/example", "/conf/");
+  system("cp", "/example/ssh.sh",  "/conf/");
 }
 
 # 切换当前运行用户,先切GID.

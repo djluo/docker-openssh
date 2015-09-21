@@ -36,7 +36,6 @@ _run() {
     -e "User_Id=${User_Id}"   \
     -v ${current_dir}/conf/:/conf/ \
     -v ${current_dir}/logs/:/logs/ \
-    -v ${current_dir}/supervisord.conf:/supervisord.conf \
     --name ${name} ${images} \
     $cmd
 }

@@ -14,7 +14,9 @@ RUN export http_proxy="http://172.17.42.1:8080/" \
     && rm -rf usr/share/info   \
     && find var/lib/apt -type f -exec rm -fv {} \;
 
-ADD ./entrypoint.pl      /entrypoint.pl
+COPY ./entrypoint.pl      /entrypoint.pl
+COPY ./supervisord.conf   /supervisord.conf
+COPY ./conf               /example/
 
 ENTRYPOINT ["/entrypoint.pl"]
 CMD        ["/usr/bin/ssh"]
